@@ -1,0 +1,730 @@
+rgukt-basar@rajesh-the-learner:~$ sudo mysql
+[sudo] password for rgukt-basar: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.35-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> create database student;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| student            |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> create database lab1;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab1               |
+| mysql              |
+| performance_schema |
+| student            |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use lab1;
+Database changed
+mysql> create table student(ID char(10),Name Varchar(20),marks integer,grade char);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into student values('B200101','Rajesh',96,'EX');
+ERROR 1406 (22001): Data too long for column 'grade' at row 1
+mysql> insert into student values('B200101','Rajesh',96,'X');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select*from student;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
++---------+--------+-------+-------+
+1 row in set (0.00 sec)
+
+mysql> insert into student values('B200462','Anwesh',36,'P');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select*from student;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200462 | Anwesh |    36 | P     |
++---------+--------+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> update student set marks=24 where ID='B200462';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from student;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200462 | Anwesh |    24 | P     |
++---------+--------+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select names,marks from student order by marks asc;
+ERROR 1054 (42S22): Unknown column 'names' in 'field list'
+mysql> select name,marks from student order by marks asc;
++--------+-------+
+| name   | marks |
++--------+-------+
+| Anwesh |    24 |
+| Rajesh |    96 |
++--------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into student values('B201284','Balaji',21,'R'),('B200918','Afroz',56,'D');
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select*from student;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200462 | Anwesh |    24 | P     |
+| B201284 | Balaji |    21 | R     |
+| B200918 | Afroz  |    56 | D     |
++---------+--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select*from student order by marks desc;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200918 | Afroz  |    56 | D     |
+| B200462 | Anwesh |    24 | P     |
+| B201284 | Balaji |    21 | R     |
++---------+--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select*from student order by ID;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200462 | Anwesh |    24 | P     |
+| B200918 | Afroz  |    56 | D     |
+| B201284 | Balaji |    21 | R     |
++---------+--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> update student set marks=24,grade='P' where ID='B201284;
+    '> ^C
+mysql> update student set marks=24,grade='P' where ID='B201284';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from student;
++---------+--------+-------+-------+
+| ID      | Name   | marks | grade |
++---------+--------+-------+-------+
+| B200101 | Rajesh |    96 | X     |
+| B200462 | Anwesh |    24 | P     |
+| B201284 | Balaji |    24 | P     |
+| B200918 | Afroz  |    56 | D     |
++---------+--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into student values('B200464','Gopikrishna',72,'C'),('B200026','Tharun',88,'A'),('B200003','Ramsingh',95,'X');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT*FROM STUDENT;
+ERROR 1146 (42S02): Table 'lab1.STUDENT' doesn't exist
+mysql> SELECT*FROM student;
++---------+-------------+-------+-------+
+| ID      | Name        | marks | grade |
++---------+-------------+-------+-------+
+| B200101 | Rajesh      |    96 | X     |
+| B200462 | Anwesh      |    24 | P     |
+| B201284 | Balaji      |    24 | P     |
+| B200918 | Afroz       |    56 | D     |
+| B200464 | Gopikrishna |    72 | C     |
+| B200026 | Tharun      |    88 | A     |
+| B200003 | Ramsingh    |    95 | X     |
++---------+-------------+-------+-------+
+7 rows in set (0.00 sec)
+
+mysql> update student set marks=97 where Name='Ramsingh';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from student;;
++---------+-------------+-------+-------+
+| ID      | Name        | marks | grade |
++---------+-------------+-------+-------+
+| B200101 | Rajesh      |    96 | X     |
+| B200462 | Anwesh      |    24 | P     |
+| B201284 | Balaji      |    24 | P     |
+| B200918 | Afroz       |    56 | D     |
+| B200464 | Gopikrishna |    72 | C     |
+| B200026 | Tharun      |    88 | A     |
+| B200003 | Ramsingh    |    97 | X     |
++---------+-------------+-------+-------+
+7 rows in set (0.01 sec)
+
+ERROR: 
+No query specified
+
+mysql> select *from student order by marks desc;
++---------+-------------+-------+-------+
+| ID      | Name        | marks | grade |
++---------+-------------+-------+-------+
+| B200003 | Ramsingh    |    97 | X     |
+| B200101 | Rajesh      |    96 | X     |
+| B200026 | Tharun      |    88 | A     |
+| B200464 | Gopikrishna |    72 | C     |
+| B200918 | Afroz       |    56 | D     |
+| B200462 | Anwesh      |    24 | P     |
+| B201284 | Balaji      |    24 | P     |
++---------+-------------+-------+-------+
+7 rows in set (0.00 sec)
+
+mysql> delete from student where Name='Balaji';
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select*from student;
++---------+-------------+-------+-------+
+| ID      | Name        | marks | grade |
++---------+-------------+-------+-------+
+| B200101 | Rajesh      |    96 | X     |
+| B200462 | Anwesh      |    24 | P     |
+| B200918 | Afroz       |    56 | D     |
+| B200464 | Gopikrishna |    72 | C     |
+| B200026 | Tharun      |    88 | A     |
+| B200003 | Ramsingh    |    97 | X     |
++---------+-------------+-------+-------+
+6 rows in set (0.00 sec)
+
+mysql> alter table student add gender char;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | NULL   |
+| B200462 | Anwesh      |    24 | P     | NULL   |
+| B200918 | Afroz       |    56 | D     | NULL   |
+| B200464 | Gopikrishna |    72 | C     | NULL   |
+| B200026 | Tharun      |    88 | A     | NULL   |
+| B200003 | Ramsingh    |    97 | X     | NULL   |
++---------+-------------+-------+-------+--------+
+6 rows in set (0.00 sec)
+
+mysql> update student set gender='M';
+Query OK, 6 rows affected (0.01 sec)
+Rows matched: 6  Changed: 6  Warnings: 0
+
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | M      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
++---------+-------------+-------+-------+--------+
+6 rows in set (0.00 sec)
+
+mysql> update student set gender='F' where ID='B200918', AND ID='B200026';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', AND ID='B200026'' at line 1
+mysql> update student set gender='F' where ID='B200918', ID='B200026';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', ID='B200026'' at line 1
+mysql> update student set gender='F' where ID='B200918' and ID='B200026';
+Query OK, 0 rows affected (0.01 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | M      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
++---------+-------------+-------+-------+--------+
+6 rows in set (0.00 sec)
+
+mysql> update student set gender='F' where ID='B200462';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | F      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
++---------+-------------+-------+-------+--------+
+6 rows in set (0.00 sec)
+
+mysql> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+rgukt-basar@rajesh-the-learner:~$ sudo mysql
+[sudo] password for rgukt-basar: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.35-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab1               |
+| mysql              |
+| performance_schema |
+| student            |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use lab1;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | F      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
+| B200108 | Yeshwanth   |    84 | A     | M      |
+| B200444 | Rohit       |    56 | E     | M      |
+| B200924 | Madhu       |    66 | D     | M      |
+| B201403 | Karthik     |    95 | X     | M      |
++---------+-------------+-------+-------+--------+
+10 rows in set (0.00 sec)
+
+mysql> select ID from student;
++---------+
+| ID      |
++---------+
+| B200101 |
+| B200462 |
+| B200918 |
+| B200464 |
+| B200026 |
+| B200003 |
+| B200108 |
+| B200444 |
+| B200924 |
+| B201403 |
++---------+
+10 rows in set (0.00 sec)
+
+mysql> select Name from student;
++-------------+
+| Name        |
++-------------+
+| Rajesh      |
+| Anwesh      |
+| Afroz       |
+| Gopikrishna |
+| Tharun      |
+| Ramsingh    |
+| Yeshwanth   |
+| Rohit       |
+| Madhu       |
+| Karthik     |
++-------------+
+10 rows in set (0.00 sec)
+
+mysql> select Marks from student;
++-------+
+| Marks |
++-------+
+|    96 |
+|    24 |
+|    56 |
+|    72 |
+|    88 |
+|    97 |
+|    84 |
+|    56 |
+|    66 |
+|    95 |
++-------+
+10 rows in set (0.00 sec)
+
+mysql> select grade from student;
++-------+
+| grade |
++-------+
+| X     |
+| P     |
+| D     |
+| C     |
+| A     |
+| X     |
+| A     |
+| E     |
+| D     |
+| X     |
++-------+
+10 rows in set (0.00 sec)
+
+mysql> select gender from student;
++--------+
+| gender |
++--------+
+| M      |
+| F      |
+| M      |
+| M      |
+| M      |
+| M      |
+| M      |
+| M      |
+| M      |
+| M      |
++--------+
+10 rows in set (0.00 sec)
+
+mysql> select ID,name from student where grade='X' or grade='A';
++---------+-----------+
+| ID      | name      |
++---------+-----------+
+| B200101 | Rajesh    |
+| B200026 | Tharun    |
+| B200003 | Ramsingh  |
+| B200108 | Yeshwanth |
+| B201403 | Karthik   |
++---------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select*from student where name like '%s%';
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | F      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
+| B200108 | Yeshwanth   |    84 | A     | M      |
++---------+-------------+-------+-------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select*from student where name like '%ra%';
++---------+----------+-------+-------+--------+
+| ID      | Name     | marks | grade | gender |
++---------+----------+-------+-------+--------+
+| B200101 | Rajesh   |    96 | X     | M      |
+| B200003 | Ramsingh |    97 | X     | M      |
++---------+----------+-------+-------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select*from student where name like 's%';
+Empty set (0.00 sec)
+
+mysql> select*from student where name like 'r%';
++---------+----------+-------+-------+--------+
+| ID      | Name     | marks | grade | gender |
++---------+----------+-------+-------+--------+
+| B200101 | Rajesh   |    96 | X     | M      |
+| B200003 | Ramsingh |    97 | X     | M      |
+| B200444 | Rohit    |    56 | E     | M      |
++---------+----------+-------+-------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select*from student where name like '%h';
++---------+-----------+-------+-------+--------+
+| ID      | Name      | marks | grade | gender |
++---------+-----------+-------+-------+--------+
+| B200101 | Rajesh    |    96 | X     | M      |
+| B200462 | Anwesh    |    24 | P     | F      |
+| B200003 | Ramsingh  |    97 | X     | M      |
+| B200108 | Yeshwanth |    84 | A     | M      |
++---------+-----------+-------+-------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select ID,Names from student where marks between 50 and 100;
+ERROR 1054 (42S22): Unknown column 'Names' in 'field list'
+mysql> select ID,Names from student where marks bet 50 and 100;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'bet 50 and 100' at line 1
+mysql> select ID,Names from student where marks b/w 50 and 100;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'b/w 50 and 100' at line 1
+mysql> select ID,Name from student where marks between  50 and 100;
++---------+-------------+
+| ID      | Name        |
++---------+-------------+
+| B200101 | Rajesh      |
+| B200918 | Afroz       |
+| B200464 | Gopikrishna |
+| B200026 | Tharun      |
+| B200003 | Ramsingh    |
+| B200108 | Yeshwanth   |
+| B200444 | Rohit       |
+| B200924 | Madhu       |
+| B201403 | Karthik     |
++---------+-------------+
+9 rows in set (0.00 sec)
+
+mysql> select*from student where marks between 50 and 100;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
+| B200108 | Yeshwanth   |    84 | A     | M      |
+| B200444 | Rohit       |    56 | E     | M      |
+| B200924 | Madhu       |    66 | D     | M      |
+| B201403 | Karthik     |    95 | X     | M      |
++---------+-------------+-------+-------+--------+
+9 rows in set (0.01 sec)
+
+mysql> select*from student where marks between 50 and 100=(select*from student order by marks desc;)
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+    -> select*from student where marks order by;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+select*from student where marks order by' at line 1
+mysql> ) select*from student where marks order by;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') select*from student where marks order by' at line 1
+mysql> ) select*from student where marks order by marks;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') select*from student where marks order by marks' at line 1
+mysql> select*from student order by marks;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200462 | Anwesh      |    24 | P     | F      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200444 | Rohit       |    56 | E     | M      |
+| B200924 | Madhu       |    66 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200108 | Yeshwanth   |    84 | A     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B201403 | Karthik     |    95 | X     | M      |
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
++---------+-------------+-------+-------+--------+
+10 rows in set (0.00 sec)
+
+mysql> select Name from student order Name;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Name' at line 1
+mysql> select Name from student order by Name;
++-------------+
+| Name        |
++-------------+
+| Afroz       |
+| Anwesh      |
+| Gopikrishna |
+| Karthik     |
+| Madhu       |
+| Rajesh      |
+| Ramsingh    |
+| Rohit       |
+| Tharun      |
+| Yeshwanth   |
++-------------+
+10 rows in set (0.00 sec)
+
+mysql> select max(marks) from student;
++------------+
+| max(marks) |
++------------+
+|         97 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select*from student where marks=(select max(marks)from student);
++---------+----------+-------+-------+--------+
+| ID      | Name     | marks | grade | gender |
++---------+----------+-------+-------+--------+
+| B200003 | Ramsingh |    97 | X     | M      |
++---------+----------+-------+-------+--------+
+1 row in set (0.00 sec)
+
+mysql> select*from student where marks=(select min(marks)from student);
++---------+--------+-------+-------+--------+
+| ID      | Name   | marks | grade | gender |
++---------+--------+-------+-------+--------+
+| B200462 | Anwesh |    24 | P     | F      |
++---------+--------+-------+-------+--------+
+1 row in set (0.00 sec)
+
+mysql> select*from student order by marks desc limit 5;
++---------+-----------+-------+-------+--------+
+| ID      | Name      | marks | grade | gender |
++---------+-----------+-------+-------+--------+
+| B200003 | Ramsingh  |    97 | X     | M      |
+| B200101 | Rajesh    |    96 | X     | M      |
+| B201403 | Karthik   |    95 | X     | M      |
+| B200026 | Tharun    |    88 | A     | M      |
+| B200108 | Yeshwanth |    84 | A     | M      |
++---------+-----------+-------+-------+--------+
+5 rows in set (0.00 sec)
+
+mysql> 
+
+rgukt-basar@rajesh-the-learner:~$ sudo mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.35-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab1               |
+| mysql              |
+| performance_schema |
+| student            |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use lab1;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select*from studenr;
+ERROR 1146 (42S02): Table 'lab1.studenr' doesn't exist
+mysql> select*from student;
++---------+-------------+-------+-------+--------+
+| ID      | Name        | marks | grade | gender |
++---------+-------------+-------+-------+--------+
+| B200101 | Rajesh      |    96 | X     | M      |
+| B200462 | Anwesh      |    24 | P     | F      |
+| B200918 | Afroz       |    56 | D     | M      |
+| B200464 | Gopikrishna |    72 | C     | M      |
+| B200026 | Tharun      |    88 | A     | M      |
+| B200003 | Ramsingh    |    97 | X     | M      |
+| B200108 | Yeshwanth   |    84 | A     | M      |
+| B200444 | Rohit       |    56 | E     | M      |
+| B200924 | Madhu       |    66 | D     | M      |
+| B201403 | Karthik     |    95 | X     | M      |
++---------+-------------+-------+-------+--------+
+10 rows in set (0.02 sec)
+
+mysql> select count(ID) from student;
++-----------+
+| count(ID) |
++-----------+
+|        10 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*)from student;
++----------+
+| count(*) |
++----------+
+|       10 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(ID) from student where grade='A' or grade='X';
++-----------+
+| count(ID) |
++-----------+
+|         5 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select count(ID) from student where grade='A';
++-----------+
+| count(ID) |
++-----------+
+|         2 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select count(ID) from student where grade='X';
++-----------+
+| count(ID) |
++-----------+
+|         3 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> 

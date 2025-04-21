@@ -1,0 +1,104 @@
+1. Find the names of the instructors(other than computer science) whose salary is greater than at least one instructor in the computer science department
+mysql> select name from instructor where dept_name!='Computer Science' and salary>any(select salary from instructor where dept_name='Computer Science');
++----------+
+| name     |
++----------+
+| Einstein |
++----------+
+
+
+
+mysql>select name,1.03*salary from instructor i where salary<(select avg(salary) from instructor where dept_name=i.dept_name);
++-------+-------------+
+| name  | 1.03*salary |
++-------+-------------+
+| Korth |    77250.00 |
++-------+-------------+
+
+mysql> select name,1.03*salary as Incre from instructor i,(select dept_name,avg(salary) Avg from instructor group by dept_name) as t where t.dept_name=i.dept_name and i.salary<t.Avg;
++-------+----------+
+| name  | Incre    |
++-------+----------+
+| Korth | 77250.00 |
++-------+----------+
+
+
+
+
+3. Display the course titles and instructor names taken by the student named ‘kshitiz’
+mysql>  select distinct c.title,i.name from student s,takes t1,course c,teaches t2,instructor i where s.id=t1.id and t1.course_id=c.course_id and c.course_id=t2.course_id and t2.id=i.id and s.name='Kshitiz';
++-------+----------+
+| title | name     |
++-------+----------+
+| DBMS  | Einstein |
+| PS    | Mozart   |
++-------+----------+
+x	
+
+4. Display the course titles and department name conducted in building ‘AB-II’ class room ‘112’
+mysql>select c.title,c.dept_name from course c,section s where c.course_id=s.course_id and building='AB-II' and room_no=112;
++-------+------------------+
+| title | dept_name        |
++-------+------------------+
+| DBMS  | Computer Science |
+| PS    | Maths            |
++-------+------------------+
+
+
+5. Display the student name who have taken all the courses in Computer Science department
+mysql> select name from student where id in(Select t.id from takes t,course c where t.course_id=c.course_id and dept_name='Computer Science' group by t.id having count(*)=(select count(*) from course where dept_name='Computer Science'));
++------+
+| name |
++------+
+| Mike |
++------+	
+s
+
+6. Display the highest credit subjects in each year-semester
+
+mysql> select year,semester,max(credits) from course c,section s where c.course_id=s.course_id group by year,semester;
++------+----------+--------------+
+| year | semester | max(credits) |
++------+----------+--------------+
+| P1   |        1 |            3 |
+| E3   |        1 |            4 |
+| E2   |        1 |            4 |
++------+----------+--------------+
+
+ 
+
+7. Display ids and titles of courses which are offered in computer science department in either semester1 or semester 2 of ‘E2’
+mysql> select course_id,title from course where dept_name='Computer Science' and course_id in(select course_id from section where semester in (1,2) and year='E2');
++-----------+-------+
+| course_id | title |
++-----------+-------+
+| CS-2201   | DBMS  |
++-----------+-------+
+
+
+
+
+
+
+
+8. Find the number of students who have taken course sections taught by instructor ‘Korth’
+mysql> select count(distinct s.id) from student s,takes t1,course c,teaches t2,instructor i where s.id=t1.id and t1.course_id=c.course_id and c.course_id=t2.course_id and t2.id=i.id and i.name='Korth';
++----------------------+
+| count(distinct s.id) |
++----------------------+
+|                    0 |
++----------------------+
+
+
+9. Display the details of the students  who got ‘A’ grade in all the courses he has taken
+mysql> select * from student s  where id in(select id from takes t where grade='A' group by id having count(*)=(select count(*) from takes where id=s.id));
++------+------+------------------+----------+
+| id   | name | dept_name        | tot_cred |
++------+------+------------------+----------+
+| 1001 | Mike | Computer Science |       70 |
++------+------+------------------+----------+
+
+
+
+
+
