@@ -1,0 +1,1324 @@
+1.display name of the sailors and day on which sailor has reserved the boat for all the sailors
+mysql> select sname,day from sailors,reserves where sailors.sid=reserves.sid;
++---------+------------+
+| sname   | day        |
++---------+------------+
+| Dustin  | 1998-10-10 |
+| Dustin  | 1998-10-10 |
+| Dustin  | 1998-10-08 |
+| Dustin  | 1998-10-07 |
+| Lubber  | 1998-11-10 |
+| Lubber  | 1998-11-06 |
+| Lubber  | 1998-11-12 |
+| Horatio | 1998-09-05 |
+| Horatio | 1998-09-08 |
+| Horatio | 1998-09-08 |
++---------+------------+
+2.display names of the sailors and day on which he reserved the boat no=103;
+mysql> select sname,day from sailors,reserves where sailors.sid=reserves.sid and bid=103;
++---------+------------+
+| sname   | day        |
++---------+------------+
+| Dustin  | 1998-10-08 |
+| Lubber  | 1998-11-06 |
+| Horatio | 1998-09-08 |
++---------+------------+
+3.display names of the sailors who reservesd at least two boats
+mysql> select sname from sailors where sid in(select sid from reserves group by sid  having count(*)>=2);
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname,sid from sailors where sid in(select sid from reserves group by sid  having count(*)>=2);
++---------+-----+
+| sname   | sid |
++---------+-----+
+| Dustin  |  22 |
+| Lubber  |  31 |
+| Horatio |  64 |
++---------+-----+
+3 rows in set (0.00 sec)
+
+
+4.display names of the sailors who have reserves exactly two boats;
+mysql> select sname from sailors where sid in(select sid from reserves group by sid  having count(*)=2);
++---------+
+| sname   |
++---------+
+| Horatio |
++---------+
+mysql> select sid, sname from sailors where sid in(select sid from reserves group by sid  having count(*)=2);
++-----+---------+
+| sid | sname   |
++-----+---------+
+|  64 | Horatio |
++-----+---------+
+1 row in set (0.00 sec)
+
+
+5.display names of the sailors who reserved all the boats;
+
+
+5. 
+
+rgukt-basar@rajesh-the-learner:~$ sudo mysql;
+[sudo] password for rgukt-basar: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.35-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab1               |
+| lab2               |
+| mysql              |
+| performance_schema |
+| student            |
+| sys                |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> use lab2;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select*from sailors;
++-----+---------+--------+------+
+| sid | sname   | rating | age  |
++-----+---------+--------+------+
+|  22 | Dustin  |      7 |   45 |
+|  29 | Brutus  |      1 |   33 |
+|  31 | Lubber  |      8 | 55.5 |
+|  32 | Andy    |      8 | 25.5 |
+|  58 | Rusty   |     10 |   35 |
+|  64 | Horatio |      7 |   35 |
+|  71 | Zorba   |     10 |   16 |
+|  74 | Horatio |      9 |   40 |
+|  85 | Art     |      3 | 25.5 |
+|  95 | Bolo    |      3 | 63.5 |
++-----+---------+--------+------+
+10 rows in set (0.01 sec)
+
+mysql> select*from reserves;
++-----+-----+------------+
+| sid | bid | day        |
++-----+-----+------------+
+|  22 | 101 | 1998-10-10 |
+|  22 | 102 | 1998-10-10 |
+|  22 | 103 | 1998-10-08 |
+|  22 | 104 | 1998-10-07 |
+|  31 | 102 | 1998-11-10 |
+|  31 | 103 | 1998-11-06 |
+|  31 | 104 | 1998-11-12 |
+|  64 | 101 | 1998-09-05 |
+|  64 | 102 | 1998-09-08 |
+|  74 | 103 | 1998-09-08 |
++-----+-----+------------+
+10 rows in set (0.00 sec)
+
+mysql> select*from boats;
++-----+-----------+-------+
+| bid | bname     | color |
++-----+-----------+-------+
+| 101 | Interlake | Blue  |
+| 102 | Interlake | Red   |
+| 103 | Clipper   | Green |
+| 104 | Marine    | Red   |
++-----+-----------+-------+
+4 rows in set (0.01 sec)
+
+mysql> select sname,bid from sailors left join on reserves sailors.sid=reservses.sid;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'on reserves sailors.sid=reservses.sid' at line 1
+mysql> select sname,bid from sailors left join on reserves sailors.sid=reserves.sid;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'on reserves sailors.sid=reserves.sid' at line 1
+mysql> select sname,bid from sailors left join reserves on  sailors.sid=reserves.sid;
++---------+------+
+| sname   | bid  |
++---------+------+
+| Dustin  |  101 |
+| Dustin  |  102 |
+| Dustin  |  103 |
+| Dustin  |  104 |
+| Brutus  | NULL |
+| Lubber  |  102 |
+| Lubber  |  103 |
+| Lubber  |  104 |
+| Andy    | NULL |
+| Rusty   | NULL |
+| Horatio |  101 |
+| Horatio |  102 |
+| Zorba   | NULL |
+| Horatio |  103 |
+| Art     | NULL |
+| Bolo    | NULL |
++---------+------+
+16 rows in set (0.00 sec)
+
+mysql> select sname,bid,rating,age from sailors left join reserves on sailors.sid=reserves.sid;
++---------+------+--------+------+
+| sname   | bid  | rating | age  |
++---------+------+--------+------+
+| Dustin  |  101 |      7 |   45 |
+| Dustin  |  102 |      7 |   45 |
+| Dustin  |  103 |      7 |   45 |
+| Dustin  |  104 |      7 |   45 |
+| Brutus  | NULL |      1 |   33 |
+| Lubber  |  102 |      8 | 55.5 |
+| Lubber  |  103 |      8 | 55.5 |
+| Lubber  |  104 |      8 | 55.5 |
+| Andy    | NULL |      8 | 25.5 |
+| Rusty   | NULL |     10 |   35 |
+| Horatio |  101 |      7 |   35 |
+| Horatio |  102 |      7 |   35 |
+| Zorba   | NULL |     10 |   16 |
+| Horatio |  103 |      9 |   40 |
+| Art     | NULL |      3 | 25.5 |
+| Bolo    | NULL |      3 | 63.5 |
++---------+------+--------+------+
+16 rows in set (0.00 sec)
+
+mysql> select sname,rating,age,bid from sailors right join reserves on sailors.sid=reserves.sid;
++---------+--------+------+-----+
+| sname   | rating | age  | bid |
++---------+--------+------+-----+
+| Dustin  |      7 |   45 | 101 |
+| Horatio |      7 |   35 | 101 |
+| Dustin  |      7 |   45 | 102 |
+| Lubber  |      8 | 55.5 | 102 |
+| Horatio |      7 |   35 | 102 |
+| Dustin  |      7 |   45 | 103 |
+| Lubber  |      8 | 55.5 | 103 |
+| Horatio |      9 |   40 | 103 |
+| Dustin  |      7 |   45 | 104 |
+| Lubber  |      8 | 55.5 | 104 |
++---------+--------+------+-----+
+10 rows in set (0.00 sec)
+
+mysql> select sname,rating,age,sid,bid from sailors inner join reserves on sailors.sid=reserves.sid;
+ERROR 1052 (23000): Column 'sid' in field list is ambiguous
+mysql> select sname,rating,age,bid from sailors inner join reserves on sailors.sid=reserves.sid;
++---------+--------+------+-----+
+| sname   | rating | age  | bid |
++---------+--------+------+-----+
+| Dustin  |      7 |   45 | 101 |
+| Horatio |      7 |   35 | 101 |
+| Dustin  |      7 |   45 | 102 |
+| Lubber  |      8 | 55.5 | 102 |
+| Horatio |      7 |   35 | 102 |
+| Dustin  |      7 |   45 | 103 |
+| Lubber  |      8 | 55.5 | 103 |
+| Horatio |      9 |   40 | 103 |
+| Dustin  |      7 |   45 | 104 |
+| Lubber  |      8 | 55.5 | 104 |
++---------+--------+------+-----+
+10 rows in set (0.01 sec)
+
+mysql> select sname,bid,rating,age from sailors cross join reserves;
++---------+-----+--------+------+
+| sname   | bid | rating | age  |
++---------+-----+--------+------+
+| Bolo    | 101 |      3 | 63.5 |
+| Art     | 101 |      3 | 25.5 |
+| Horatio | 101 |      9 |   40 |
+| Zorba   | 101 |     10 |   16 |
+| Horatio | 101 |      7 |   35 |
+| Rusty   | 101 |     10 |   35 |
+| Andy    | 101 |      8 | 25.5 |
+| Lubber  | 101 |      8 | 55.5 |
+| Brutus  | 101 |      1 |   33 |
+| Dustin  | 101 |      7 |   45 |
+| Bolo    | 101 |      3 | 63.5 |
+| Art     | 101 |      3 | 25.5 |
+| Horatio | 101 |      9 |   40 |
+| Zorba   | 101 |     10 |   16 |
+| Horatio | 101 |      7 |   35 |
+| Rusty   | 101 |     10 |   35 |
+| Andy    | 101 |      8 | 25.5 |
+| Lubber  | 101 |      8 | 55.5 |
+| Brutus  | 101 |      1 |   33 |
+| Dustin  | 101 |      7 |   45 |
+| Bolo    | 102 |      3 | 63.5 |
+| Art     | 102 |      3 | 25.5 |
+| Horatio | 102 |      9 |   40 |
+| Zorba   | 102 |     10 |   16 |
+| Horatio | 102 |      7 |   35 |
+| Rusty   | 102 |     10 |   35 |
+| Andy    | 102 |      8 | 25.5 |
+| Lubber  | 102 |      8 | 55.5 |
+| Brutus  | 102 |      1 |   33 |
+| Dustin  | 102 |      7 |   45 |
+| Bolo    | 102 |      3 | 63.5 |
+| Art     | 102 |      3 | 25.5 |
+| Horatio | 102 |      9 |   40 |
+| Zorba   | 102 |     10 |   16 |
+| Horatio | 102 |      7 |   35 |
+| Rusty   | 102 |     10 |   35 |
+| Andy    | 102 |      8 | 25.5 |
+| Lubber  | 102 |      8 | 55.5 |
+| Brutus  | 102 |      1 |   33 |
+| Dustin  | 102 |      7 |   45 |
+| Bolo    | 102 |      3 | 63.5 |
+| Art     | 102 |      3 | 25.5 |
+| Horatio | 102 |      9 |   40 |
+| Zorba   | 102 |     10 |   16 |
+| Horatio | 102 |      7 |   35 |
+| Rusty   | 102 |     10 |   35 |
+| Andy    | 102 |      8 | 25.5 |
+| Lubber  | 102 |      8 | 55.5 |
+| Brutus  | 102 |      1 |   33 |
+| Dustin  | 102 |      7 |   45 |
+| Bolo    | 103 |      3 | 63.5 |
+| Art     | 103 |      3 | 25.5 |
+| Horatio | 103 |      9 |   40 |
+| Zorba   | 103 |     10 |   16 |
+| Horatio | 103 |      7 |   35 |
+| Rusty   | 103 |     10 |   35 |
+| Andy    | 103 |      8 | 25.5 |
+| Lubber  | 103 |      8 | 55.5 |
+| Brutus  | 103 |      1 |   33 |
+| Dustin  | 103 |      7 |   45 |
+| Bolo    | 103 |      3 | 63.5 |
+| Art     | 103 |      3 | 25.5 |
+| Horatio | 103 |      9 |   40 |
+| Zorba   | 103 |     10 |   16 |
+| Horatio | 103 |      7 |   35 |
+| Rusty   | 103 |     10 |   35 |
+| Andy    | 103 |      8 | 25.5 |
+| Lubber  | 103 |      8 | 55.5 |
+| Brutus  | 103 |      1 |   33 |
+| Dustin  | 103 |      7 |   45 |
+| Bolo    | 103 |      3 | 63.5 |
+| Art     | 103 |      3 | 25.5 |
+| Horatio | 103 |      9 |   40 |
+| Zorba   | 103 |     10 |   16 |
+| Horatio | 103 |      7 |   35 |
+| Rusty   | 103 |     10 |   35 |
+| Andy    | 103 |      8 | 25.5 |
+| Lubber  | 103 |      8 | 55.5 |
+| Brutus  | 103 |      1 |   33 |
+| Dustin  | 103 |      7 |   45 |
+| Bolo    | 104 |      3 | 63.5 |
+| Art     | 104 |      3 | 25.5 |
+| Horatio | 104 |      9 |   40 |
+| Zorba   | 104 |     10 |   16 |
+| Horatio | 104 |      7 |   35 |
+| Rusty   | 104 |     10 |   35 |
+| Andy    | 104 |      8 | 25.5 |
+| Lubber  | 104 |      8 | 55.5 |
+| Brutus  | 104 |      1 |   33 |
+| Dustin  | 104 |      7 |   45 |
+| Bolo    | 104 |      3 | 63.5 |
+| Art     | 104 |      3 | 25.5 |
+| Horatio | 104 |      9 |   40 |
+| Zorba   | 104 |     10 |   16 |
+| Horatio | 104 |      7 |   35 |
+| Rusty   | 104 |     10 |   35 |
+| Andy    | 104 |      8 | 25.5 |
+| Lubber  | 104 |      8 | 55.5 |
+| Brutus  | 104 |      1 |   33 |
+| Dustin  | 104 |      7 |   45 |
++---------+-----+--------+------+
+100 rows in set (0.00 sec)
+
+mysql> select sid,day,color from reserves inner join boats on reserves.bid=boats.bid;
++-----+------------+-------+
+| sid | day        | color |
++-----+------------+-------+
+|  22 | 1998-10-10 | Blue  |
+|  64 | 1998-09-05 | Blue  |
+|  22 | 1998-10-10 | Red   |
+|  31 | 1998-11-10 | Red   |
+|  64 | 1998-09-08 | Red   |
+|  22 | 1998-10-08 | Green |
+|  31 | 1998-11-06 | Green |
+|  74 | 1998-09-08 | Green |
+|  22 | 1998-10-07 | Red   |
+|  31 | 1998-11-12 | Red   |
++-----+------------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select sid,day,color from reserves left join boats on reserves.sid=boats.sid;
+ERROR 1054 (42S22): Unknown column 'boats.sid' in 'on clause'
+mysql> select sid,day,color from reserves left join boats on reserves.sid=boats.bid;
++-----+------------+-------+
+| sid | day        | color |
++-----+------------+-------+
+|  22 | 1998-10-10 | NULL  |
+|  22 | 1998-10-10 | NULL  |
+|  22 | 1998-10-08 | NULL  |
+|  22 | 1998-10-07 | NULL  |
+|  31 | 1998-11-10 | NULL  |
+|  31 | 1998-11-06 | NULL  |
+|  31 | 1998-11-12 | NULL  |
+|  64 | 1998-09-05 | NULL  |
+|  64 | 1998-09-08 | NULL  |
+|  74 | 1998-09-08 | NULL  |
++-----+------------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select sid,day,color from reserves right join boats on reserves.sid=boats.bid;
++------+------+-------+
+| sid  | day  | color |
++------+------+-------+
+| NULL | NULL | Blue  |
+| NULL | NULL | Red   |
+| NULL | NULL | Green |
+| NULL | NULL | Red   |
++------+------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select sid,day,color from reserves cross join boats;
++-----+------------+-------+
+| sid | day        | color |
++-----+------------+-------+
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Green |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Blue  |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Green |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Blue  |
+|  22 | 1998-10-08 | Red   |
+|  22 | 1998-10-08 | Green |
+|  22 | 1998-10-08 | Red   |
+|  22 | 1998-10-08 | Blue  |
+|  22 | 1998-10-07 | Red   |
+|  22 | 1998-10-07 | Green |
+|  22 | 1998-10-07 | Red   |
+|  22 | 1998-10-07 | Blue  |
+|  31 | 1998-11-10 | Red   |
+|  31 | 1998-11-10 | Green |
+|  31 | 1998-11-10 | Red   |
+|  31 | 1998-11-10 | Blue  |
+|  31 | 1998-11-06 | Red   |
+|  31 | 1998-11-06 | Green |
+|  31 | 1998-11-06 | Red   |
+|  31 | 1998-11-06 | Blue  |
+|  31 | 1998-11-12 | Red   |
+|  31 | 1998-11-12 | Green |
+|  31 | 1998-11-12 | Red   |
+|  31 | 1998-11-12 | Blue  |
+|  64 | 1998-09-05 | Red   |
+|  64 | 1998-09-05 | Green |
+|  64 | 1998-09-05 | Red   |
+|  64 | 1998-09-05 | Blue  |
+|  64 | 1998-09-08 | Red   |
+|  64 | 1998-09-08 | Green |
+|  64 | 1998-09-08 | Red   |
+|  64 | 1998-09-08 | Blue  |
+|  74 | 1998-09-08 | Red   |
+|  74 | 1998-09-08 | Green |
+|  74 | 1998-09-08 | Red   |
+|  74 | 1998-09-08 | Blue  |
++-----+------------+-------+
+40 rows in set (0.00 sec)
+
+mysql> select sid,day,color from reserves full join boats;
++-----+------------+-------+
+| sid | day        | color |
++-----+------------+-------+
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Green |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Blue  |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Green |
+|  22 | 1998-10-10 | Red   |
+|  22 | 1998-10-10 | Blue  |
+|  22 | 1998-10-08 | Red   |
+|  22 | 1998-10-08 | Green |
+|  22 | 1998-10-08 | Red   |
+|  22 | 1998-10-08 | Blue  |
+|  22 | 1998-10-07 | Red   |
+|  22 | 1998-10-07 | Green |
+|  22 | 1998-10-07 | Red   |
+|  22 | 1998-10-07 | Blue  |
+|  31 | 1998-11-10 | Red   |
+|  31 | 1998-11-10 | Green |
+|  31 | 1998-11-10 | Red   |
+|  31 | 1998-11-10 | Blue  |
+|  31 | 1998-11-06 | Red   |
+|  31 | 1998-11-06 | Green |
+|  31 | 1998-11-06 | Red   |
+|  31 | 1998-11-06 | Blue  |
+|  31 | 1998-11-12 | Red   |
+|  31 | 1998-11-12 | Green |
+|  31 | 1998-11-12 | Red   |
+|  31 | 1998-11-12 | Blue  |
+|  64 | 1998-09-05 | Red   |
+|  64 | 1998-09-05 | Green |
+|  64 | 1998-09-05 | Red   |
+|  64 | 1998-09-05 | Blue  |
+|  64 | 1998-09-08 | Red   |
+|  64 | 1998-09-08 | Green |
+|  64 | 1998-09-08 | Red   |
+|  64 | 1998-09-08 | Blue  |
+|  74 | 1998-09-08 | Red   |
+|  74 | 1998-09-08 | Green |
+|  74 | 1998-09-08 | Red   |
+|  74 | 1998-09-08 | Blue  |
++-----+------------+-------+
+40 rows in set, 1 warning (0.00 sec)
+
+mysql> select sname from sailors where sid=(select sid from reserves where bid=103 and bid=104);
+Empty set (0.00 sec)
+
+mysql> select * from sailors,reserves;
++-----+---------+--------+------+-----+-----+------------+
+| sid | sname   | rating | age  | sid | bid | day        |
++-----+---------+--------+------+-----+-----+------------+
+|  95 | Bolo    |      3 | 63.5 |  22 | 101 | 1998-10-10 |
+|  85 | Art     |      3 | 25.5 |  22 | 101 | 1998-10-10 |
+|  74 | Horatio |      9 |   40 |  22 | 101 | 1998-10-10 |
+|  71 | Zorba   |     10 |   16 |  22 | 101 | 1998-10-10 |
+|  64 | Horatio |      7 |   35 |  22 | 101 | 1998-10-10 |
+|  58 | Rusty   |     10 |   35 |  22 | 101 | 1998-10-10 |
+|  32 | Andy    |      8 | 25.5 |  22 | 101 | 1998-10-10 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 101 | 1998-10-10 |
+|  29 | Brutus  |      1 |   33 |  22 | 101 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 101 | 1998-10-10 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 102 | 1998-10-10 |
+|  85 | Art     |      3 | 25.5 |  22 | 102 | 1998-10-10 |
+|  74 | Horatio |      9 |   40 |  22 | 102 | 1998-10-10 |
+|  71 | Zorba   |     10 |   16 |  22 | 102 | 1998-10-10 |
+|  64 | Horatio |      7 |   35 |  22 | 102 | 1998-10-10 |
+|  58 | Rusty   |     10 |   35 |  22 | 102 | 1998-10-10 |
+|  32 | Andy    |      8 | 25.5 |  22 | 102 | 1998-10-10 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 102 | 1998-10-10 |
+|  29 | Brutus  |      1 |   33 |  22 | 102 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 102 | 1998-10-10 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 103 | 1998-10-08 |
+|  85 | Art     |      3 | 25.5 |  22 | 103 | 1998-10-08 |
+|  74 | Horatio |      9 |   40 |  22 | 103 | 1998-10-08 |
+|  71 | Zorba   |     10 |   16 |  22 | 103 | 1998-10-08 |
+|  64 | Horatio |      7 |   35 |  22 | 103 | 1998-10-08 |
+|  58 | Rusty   |     10 |   35 |  22 | 103 | 1998-10-08 |
+|  32 | Andy    |      8 | 25.5 |  22 | 103 | 1998-10-08 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 103 | 1998-10-08 |
+|  29 | Brutus  |      1 |   33 |  22 | 103 | 1998-10-08 |
+|  22 | Dustin  |      7 |   45 |  22 | 103 | 1998-10-08 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 104 | 1998-10-07 |
+|  85 | Art     |      3 | 25.5 |  22 | 104 | 1998-10-07 |
+|  74 | Horatio |      9 |   40 |  22 | 104 | 1998-10-07 |
+|  71 | Zorba   |     10 |   16 |  22 | 104 | 1998-10-07 |
+|  64 | Horatio |      7 |   35 |  22 | 104 | 1998-10-07 |
+|  58 | Rusty   |     10 |   35 |  22 | 104 | 1998-10-07 |
+|  32 | Andy    |      8 | 25.5 |  22 | 104 | 1998-10-07 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 104 | 1998-10-07 |
+|  29 | Brutus  |      1 |   33 |  22 | 104 | 1998-10-07 |
+|  22 | Dustin  |      7 |   45 |  22 | 104 | 1998-10-07 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 102 | 1998-11-10 |
+|  85 | Art     |      3 | 25.5 |  31 | 102 | 1998-11-10 |
+|  74 | Horatio |      9 |   40 |  31 | 102 | 1998-11-10 |
+|  71 | Zorba   |     10 |   16 |  31 | 102 | 1998-11-10 |
+|  64 | Horatio |      7 |   35 |  31 | 102 | 1998-11-10 |
+|  58 | Rusty   |     10 |   35 |  31 | 102 | 1998-11-10 |
+|  32 | Andy    |      8 | 25.5 |  31 | 102 | 1998-11-10 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 102 | 1998-11-10 |
+|  29 | Brutus  |      1 |   33 |  31 | 102 | 1998-11-10 |
+|  22 | Dustin  |      7 |   45 |  31 | 102 | 1998-11-10 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 103 | 1998-11-06 |
+|  85 | Art     |      3 | 25.5 |  31 | 103 | 1998-11-06 |
+|  74 | Horatio |      9 |   40 |  31 | 103 | 1998-11-06 |
+|  71 | Zorba   |     10 |   16 |  31 | 103 | 1998-11-06 |
+|  64 | Horatio |      7 |   35 |  31 | 103 | 1998-11-06 |
+|  58 | Rusty   |     10 |   35 |  31 | 103 | 1998-11-06 |
+|  32 | Andy    |      8 | 25.5 |  31 | 103 | 1998-11-06 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 103 | 1998-11-06 |
+|  29 | Brutus  |      1 |   33 |  31 | 103 | 1998-11-06 |
+|  22 | Dustin  |      7 |   45 |  31 | 103 | 1998-11-06 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 104 | 1998-11-12 |
+|  85 | Art     |      3 | 25.5 |  31 | 104 | 1998-11-12 |
+|  74 | Horatio |      9 |   40 |  31 | 104 | 1998-11-12 |
+|  71 | Zorba   |     10 |   16 |  31 | 104 | 1998-11-12 |
+|  64 | Horatio |      7 |   35 |  31 | 104 | 1998-11-12 |
+|  58 | Rusty   |     10 |   35 |  31 | 104 | 1998-11-12 |
+|  32 | Andy    |      8 | 25.5 |  31 | 104 | 1998-11-12 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 104 | 1998-11-12 |
+|  29 | Brutus  |      1 |   33 |  31 | 104 | 1998-11-12 |
+|  22 | Dustin  |      7 |   45 |  31 | 104 | 1998-11-12 |
+|  95 | Bolo    |      3 | 63.5 |  64 | 101 | 1998-09-05 |
+|  85 | Art     |      3 | 25.5 |  64 | 101 | 1998-09-05 |
+|  74 | Horatio |      9 |   40 |  64 | 101 | 1998-09-05 |
+|  71 | Zorba   |     10 |   16 |  64 | 101 | 1998-09-05 |
+|  64 | Horatio |      7 |   35 |  64 | 101 | 1998-09-05 |
+|  58 | Rusty   |     10 |   35 |  64 | 101 | 1998-09-05 |
+|  32 | Andy    |      8 | 25.5 |  64 | 101 | 1998-09-05 |
+|  31 | Lubber  |      8 | 55.5 |  64 | 101 | 1998-09-05 |
+|  29 | Brutus  |      1 |   33 |  64 | 101 | 1998-09-05 |
+|  22 | Dustin  |      7 |   45 |  64 | 101 | 1998-09-05 |
+|  95 | Bolo    |      3 | 63.5 |  64 | 102 | 1998-09-08 |
+|  85 | Art     |      3 | 25.5 |  64 | 102 | 1998-09-08 |
+|  74 | Horatio |      9 |   40 |  64 | 102 | 1998-09-08 |
+|  71 | Zorba   |     10 |   16 |  64 | 102 | 1998-09-08 |
+|  64 | Horatio |      7 |   35 |  64 | 102 | 1998-09-08 |
+|  58 | Rusty   |     10 |   35 |  64 | 102 | 1998-09-08 |
+|  32 | Andy    |      8 | 25.5 |  64 | 102 | 1998-09-08 |
+|  31 | Lubber  |      8 | 55.5 |  64 | 102 | 1998-09-08 |
+|  29 | Brutus  |      1 |   33 |  64 | 102 | 1998-09-08 |
+|  22 | Dustin  |      7 |   45 |  64 | 102 | 1998-09-08 |
+|  95 | Bolo    |      3 | 63.5 |  74 | 103 | 1998-09-08 |
+|  85 | Art     |      3 | 25.5 |  74 | 103 | 1998-09-08 |
+|  74 | Horatio |      9 |   40 |  74 | 103 | 1998-09-08 |
+|  71 | Zorba   |     10 |   16 |  74 | 103 | 1998-09-08 |
+|  64 | Horatio |      7 |   35 |  74 | 103 | 1998-09-08 |
+|  58 | Rusty   |     10 |   35 |  74 | 103 | 1998-09-08 |
+|  32 | Andy    |      8 | 25.5 |  74 | 103 | 1998-09-08 |
+|  31 | Lubber  |      8 | 55.5 |  74 | 103 | 1998-09-08 |
+|  29 | Brutus  |      1 |   33 |  74 | 103 | 1998-09-08 |
+|  22 | Dustin  |      7 |   45 |  74 | 103 | 1998-09-08 |
++-----+---------+--------+------+-----+-----+------------+
+100 rows in set (0.00 sec)
+
+mysql> select * from sailors full join reserves;
++-----+---------+--------+------+-----+-----+------------+
+| sid | sname   | rating | age  | sid | bid | day        |
++-----+---------+--------+------+-----+-----+------------+
+|  95 | Bolo    |      3 | 63.5 |  22 | 101 | 1998-10-10 |
+|  85 | Art     |      3 | 25.5 |  22 | 101 | 1998-10-10 |
+|  74 | Horatio |      9 |   40 |  22 | 101 | 1998-10-10 |
+|  71 | Zorba   |     10 |   16 |  22 | 101 | 1998-10-10 |
+|  64 | Horatio |      7 |   35 |  22 | 101 | 1998-10-10 |
+|  58 | Rusty   |     10 |   35 |  22 | 101 | 1998-10-10 |
+|  32 | Andy    |      8 | 25.5 |  22 | 101 | 1998-10-10 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 101 | 1998-10-10 |
+|  29 | Brutus  |      1 |   33 |  22 | 101 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 101 | 1998-10-10 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 102 | 1998-10-10 |
+|  85 | Art     |      3 | 25.5 |  22 | 102 | 1998-10-10 |
+|  74 | Horatio |      9 |   40 |  22 | 102 | 1998-10-10 |
+|  71 | Zorba   |     10 |   16 |  22 | 102 | 1998-10-10 |
+|  64 | Horatio |      7 |   35 |  22 | 102 | 1998-10-10 |
+|  58 | Rusty   |     10 |   35 |  22 | 102 | 1998-10-10 |
+|  32 | Andy    |      8 | 25.5 |  22 | 102 | 1998-10-10 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 102 | 1998-10-10 |
+|  29 | Brutus  |      1 |   33 |  22 | 102 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 102 | 1998-10-10 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 103 | 1998-10-08 |
+|  85 | Art     |      3 | 25.5 |  22 | 103 | 1998-10-08 |
+|  74 | Horatio |      9 |   40 |  22 | 103 | 1998-10-08 |
+|  71 | Zorba   |     10 |   16 |  22 | 103 | 1998-10-08 |
+|  64 | Horatio |      7 |   35 |  22 | 103 | 1998-10-08 |
+|  58 | Rusty   |     10 |   35 |  22 | 103 | 1998-10-08 |
+|  32 | Andy    |      8 | 25.5 |  22 | 103 | 1998-10-08 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 103 | 1998-10-08 |
+|  29 | Brutus  |      1 |   33 |  22 | 103 | 1998-10-08 |
+|  22 | Dustin  |      7 |   45 |  22 | 103 | 1998-10-08 |
+|  95 | Bolo    |      3 | 63.5 |  22 | 104 | 1998-10-07 |
+|  85 | Art     |      3 | 25.5 |  22 | 104 | 1998-10-07 |
+|  74 | Horatio |      9 |   40 |  22 | 104 | 1998-10-07 |
+|  71 | Zorba   |     10 |   16 |  22 | 104 | 1998-10-07 |
+|  64 | Horatio |      7 |   35 |  22 | 104 | 1998-10-07 |
+|  58 | Rusty   |     10 |   35 |  22 | 104 | 1998-10-07 |
+|  32 | Andy    |      8 | 25.5 |  22 | 104 | 1998-10-07 |
+|  31 | Lubber  |      8 | 55.5 |  22 | 104 | 1998-10-07 |
+|  29 | Brutus  |      1 |   33 |  22 | 104 | 1998-10-07 |
+|  22 | Dustin  |      7 |   45 |  22 | 104 | 1998-10-07 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 102 | 1998-11-10 |
+|  85 | Art     |      3 | 25.5 |  31 | 102 | 1998-11-10 |
+|  74 | Horatio |      9 |   40 |  31 | 102 | 1998-11-10 |
+|  71 | Zorba   |     10 |   16 |  31 | 102 | 1998-11-10 |
+|  64 | Horatio |      7 |   35 |  31 | 102 | 1998-11-10 |
+|  58 | Rusty   |     10 |   35 |  31 | 102 | 1998-11-10 |
+|  32 | Andy    |      8 | 25.5 |  31 | 102 | 1998-11-10 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 102 | 1998-11-10 |
+|  29 | Brutus  |      1 |   33 |  31 | 102 | 1998-11-10 |
+|  22 | Dustin  |      7 |   45 |  31 | 102 | 1998-11-10 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 103 | 1998-11-06 |
+|  85 | Art     |      3 | 25.5 |  31 | 103 | 1998-11-06 |
+|  74 | Horatio |      9 |   40 |  31 | 103 | 1998-11-06 |
+|  71 | Zorba   |     10 |   16 |  31 | 103 | 1998-11-06 |
+|  64 | Horatio |      7 |   35 |  31 | 103 | 1998-11-06 |
+|  58 | Rusty   |     10 |   35 |  31 | 103 | 1998-11-06 |
+|  32 | Andy    |      8 | 25.5 |  31 | 103 | 1998-11-06 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 103 | 1998-11-06 |
+|  29 | Brutus  |      1 |   33 |  31 | 103 | 1998-11-06 |
+|  22 | Dustin  |      7 |   45 |  31 | 103 | 1998-11-06 |
+|  95 | Bolo    |      3 | 63.5 |  31 | 104 | 1998-11-12 |
+|  85 | Art     |      3 | 25.5 |  31 | 104 | 1998-11-12 |
+|  74 | Horatio |      9 |   40 |  31 | 104 | 1998-11-12 |
+|  71 | Zorba   |     10 |   16 |  31 | 104 | 1998-11-12 |
+|  64 | Horatio |      7 |   35 |  31 | 104 | 1998-11-12 |
+|  58 | Rusty   |     10 |   35 |  31 | 104 | 1998-11-12 |
+|  32 | Andy    |      8 | 25.5 |  31 | 104 | 1998-11-12 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 104 | 1998-11-12 |
+|  29 | Brutus  |      1 |   33 |  31 | 104 | 1998-11-12 |
+|  22 | Dustin  |      7 |   45 |  31 | 104 | 1998-11-12 |
+|  95 | Bolo    |      3 | 63.5 |  64 | 101 | 1998-09-05 |
+|  85 | Art     |      3 | 25.5 |  64 | 101 | 1998-09-05 |
+|  74 | Horatio |      9 |   40 |  64 | 101 | 1998-09-05 |
+|  71 | Zorba   |     10 |   16 |  64 | 101 | 1998-09-05 |
+|  64 | Horatio |      7 |   35 |  64 | 101 | 1998-09-05 |
+|  58 | Rusty   |     10 |   35 |  64 | 101 | 1998-09-05 |
+|  32 | Andy    |      8 | 25.5 |  64 | 101 | 1998-09-05 |
+|  31 | Lubber  |      8 | 55.5 |  64 | 101 | 1998-09-05 |
+|  29 | Brutus  |      1 |   33 |  64 | 101 | 1998-09-05 |
+|  22 | Dustin  |      7 |   45 |  64 | 101 | 1998-09-05 |
+|  95 | Bolo    |      3 | 63.5 |  64 | 102 | 1998-09-08 |
+|  85 | Art     |      3 | 25.5 |  64 | 102 | 1998-09-08 |
+|  74 | Horatio |      9 |   40 |  64 | 102 | 1998-09-08 |
+|  71 | Zorba   |     10 |   16 |  64 | 102 | 1998-09-08 |
+|  64 | Horatio |      7 |   35 |  64 | 102 | 1998-09-08 |
+|  58 | Rusty   |     10 |   35 |  64 | 102 | 1998-09-08 |
+|  32 | Andy    |      8 | 25.5 |  64 | 102 | 1998-09-08 |
+|  31 | Lubber  |      8 | 55.5 |  64 | 102 | 1998-09-08 |
+|  29 | Brutus  |      1 |   33 |  64 | 102 | 1998-09-08 |
+|  22 | Dustin  |      7 |   45 |  64 | 102 | 1998-09-08 |
+|  95 | Bolo    |      3 | 63.5 |  74 | 103 | 1998-09-08 |
+|  85 | Art     |      3 | 25.5 |  74 | 103 | 1998-09-08 |
+|  74 | Horatio |      9 |   40 |  74 | 103 | 1998-09-08 |
+|  71 | Zorba   |     10 |   16 |  74 | 103 | 1998-09-08 |
+|  64 | Horatio |      7 |   35 |  74 | 103 | 1998-09-08 |
+|  58 | Rusty   |     10 |   35 |  74 | 103 | 1998-09-08 |
+|  32 | Andy    |      8 | 25.5 |  74 | 103 | 1998-09-08 |
+|  31 | Lubber  |      8 | 55.5 |  74 | 103 | 1998-09-08 |
+|  29 | Brutus  |      1 |   33 |  74 | 103 | 1998-09-08 |
+|  22 | Dustin  |      7 |   45 |  74 | 103 | 1998-09-08 |
++-----+---------+--------+------+-----+-----+------------+
+100 rows in set, 1 warning (0.00 sec)
+
+mysql> select * from sailors, reserves where sailors.sid=reserves.sid;
++-----+---------+--------+------+-----+-----+------------+
+| sid | sname   | rating | age  | sid | bid | day        |
++-----+---------+--------+------+-----+-----+------------+
+|  22 | Dustin  |      7 |   45 |  22 | 101 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 102 | 1998-10-10 |
+|  22 | Dustin  |      7 |   45 |  22 | 103 | 1998-10-08 |
+|  22 | Dustin  |      7 |   45 |  22 | 104 | 1998-10-07 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 102 | 1998-11-10 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 103 | 1998-11-06 |
+|  31 | Lubber  |      8 | 55.5 |  31 | 104 | 1998-11-12 |
+|  64 | Horatio |      7 |   35 |  64 | 101 | 1998-09-05 |
+|  64 | Horatio |      7 |   35 |  64 | 102 | 1998-09-08 |
+|  74 | Horatio |      9 |   40 |  74 | 103 | 1998-09-08 |
++-----+---------+--------+------+-----+-----+------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from reserves,boats where reserves.bid=boats.bid;
++-----+-----+------------+-----+-----------+-------+
+| sid | bid | day        | bid | bname     | color |
++-----+-----+------------+-----+-----------+-------+
+|  22 | 101 | 1998-10-10 | 101 | Interlake | Blue  |
+|  64 | 101 | 1998-09-05 | 101 | Interlake | Blue  |
+|  22 | 102 | 1998-10-10 | 102 | Interlake | Red   |
+|  31 | 102 | 1998-11-10 | 102 | Interlake | Red   |
+|  64 | 102 | 1998-09-08 | 102 | Interlake | Red   |
+|  22 | 103 | 1998-10-08 | 103 | Clipper   | Green |
+|  31 | 103 | 1998-11-06 | 103 | Clipper   | Green |
+|  74 | 103 | 1998-09-08 | 103 | Clipper   | Green |
+|  22 | 104 | 1998-10-07 | 104 | Marine    | Red   |
+|  31 | 104 | 1998-11-12 | 104 | Marine    | Red   |
++-----+-----+------------+-----+-----------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select sname from sailors,reserves where sailors.sid=reserves.sid;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Horatio |
+| Dustin  |
+| Lubber  |
+| Horatio |
+| Dustin  |
+| Lubber  |
+| Horatio |
+| Dustin  |
+| Lubber  |
++---------+
+10 rows in set (0.00 sec)
+
+mysql> select sname from sailors,reserves where sailors.sid=reserves.sid and bid=103;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors,reserves where sailors.sid=reserves.sid in  bid=103;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'bid=103' at line 1
+mysql> select sname from sailors,reserves where sailors.sid=reserves.sid and bid=103;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in (select sid from reserves where bid=103);
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in (select sid from reserves where bid=103);
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in (select sid from reserves where bid=103);
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from sailors,reserves,boats where sailors.sid=reserves.sid and reserves.bid=boats.bid;
++-----+---------+--------+------+-----+-----+------------+-----+-----------+-------+
+| sid | sname   | rating | age  | sid | bid | day        | bid | bname     | color |
++-----+---------+--------+------+-----+-----+------------+-----+-----------+-------+
+|  22 | Dustin  |      7 |   45 |  22 | 101 | 1998-10-10 | 101 | Interlake | Blue  |
+|  64 | Horatio |      7 |   35 |  64 | 101 | 1998-09-05 | 101 | Interlake | Blue  |
+|  22 | Dustin  |      7 |   45 |  22 | 102 | 1998-10-10 | 102 | Interlake | Red   |
+|  31 | Lubber  |      8 | 55.5 |  31 | 102 | 1998-11-10 | 102 | Interlake | Red   |
+|  64 | Horatio |      7 |   35 |  64 | 102 | 1998-09-08 | 102 | Interlake | Red   |
+|  22 | Dustin  |      7 |   45 |  22 | 103 | 1998-10-08 | 103 | Clipper   | Green |
+|  31 | Lubber  |      8 | 55.5 |  31 | 103 | 1998-11-06 | 103 | Clipper   | Green |
+|  74 | Horatio |      9 |   40 |  74 | 103 | 1998-09-08 | 103 | Clipper   | Green |
+|  22 | Dustin  |      7 |   45 |  22 | 104 | 1998-10-07 | 104 | Marine    | Red   |
+|  31 | Lubber  |      8 | 55.5 |  31 | 104 | 1998-11-12 | 104 | Marine    | Red   |
++-----+---------+--------+------+-----+-----+------------+-----+-----------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select sname,day from sailors,reserves;
++---------+------------+
+| sname   | day        |
++---------+------------+
+| Bolo    | 1998-10-10 |
+| Art     | 1998-10-10 |
+| Horatio | 1998-10-10 |
+| Zorba   | 1998-10-10 |
+| Horatio | 1998-10-10 |
+| Rusty   | 1998-10-10 |
+| Andy    | 1998-10-10 |
+| Lubber  | 1998-10-10 |
+| Brutus  | 1998-10-10 |
+| Dustin  | 1998-10-10 |
+| Bolo    | 1998-10-10 |
+| Art     | 1998-10-10 |
+| Horatio | 1998-10-10 |
+| Zorba   | 1998-10-10 |
+| Horatio | 1998-10-10 |
+| Rusty   | 1998-10-10 |
+| Andy    | 1998-10-10 |
+| Lubber  | 1998-10-10 |
+| Brutus  | 1998-10-10 |
+| Dustin  | 1998-10-10 |
+| Bolo    | 1998-10-08 |
+| Art     | 1998-10-08 |
+| Horatio | 1998-10-08 |
+| Zorba   | 1998-10-08 |
+| Horatio | 1998-10-08 |
+| Rusty   | 1998-10-08 |
+| Andy    | 1998-10-08 |
+| Lubber  | 1998-10-08 |
+| Brutus  | 1998-10-08 |
+| Dustin  | 1998-10-08 |
+| Bolo    | 1998-10-07 |
+| Art     | 1998-10-07 |
+| Horatio | 1998-10-07 |
+| Zorba   | 1998-10-07 |
+| Horatio | 1998-10-07 |
+| Rusty   | 1998-10-07 |
+| Andy    | 1998-10-07 |
+| Lubber  | 1998-10-07 |
+| Brutus  | 1998-10-07 |
+| Dustin  | 1998-10-07 |
+| Bolo    | 1998-11-10 |
+| Art     | 1998-11-10 |
+| Horatio | 1998-11-10 |
+| Zorba   | 1998-11-10 |
+| Horatio | 1998-11-10 |
+| Rusty   | 1998-11-10 |
+| Andy    | 1998-11-10 |
+| Lubber  | 1998-11-10 |
+| Brutus  | 1998-11-10 |
+| Dustin  | 1998-11-10 |
+| Bolo    | 1998-11-06 |
+| Art     | 1998-11-06 |
+| Horatio | 1998-11-06 |
+| Zorba   | 1998-11-06 |
+| Horatio | 1998-11-06 |
+| Rusty   | 1998-11-06 |
+| Andy    | 1998-11-06 |
+| Lubber  | 1998-11-06 |
+| Brutus  | 1998-11-06 |
+| Dustin  | 1998-11-06 |
+| Bolo    | 1998-11-12 |
+| Art     | 1998-11-12 |
+| Horatio | 1998-11-12 |
+| Zorba   | 1998-11-12 |
+| Horatio | 1998-11-12 |
+| Rusty   | 1998-11-12 |
+| Andy    | 1998-11-12 |
+| Lubber  | 1998-11-12 |
+| Brutus  | 1998-11-12 |
+| Dustin  | 1998-11-12 |
+| Bolo    | 1998-09-05 |
+| Art     | 1998-09-05 |
+| Horatio | 1998-09-05 |
+| Zorba   | 1998-09-05 |
+| Horatio | 1998-09-05 |
+| Rusty   | 1998-09-05 |
+| Andy    | 1998-09-05 |
+| Lubber  | 1998-09-05 |
+| Brutus  | 1998-09-05 |
+| Dustin  | 1998-09-05 |
+| Bolo    | 1998-09-08 |
+| Art     | 1998-09-08 |
+| Horatio | 1998-09-08 |
+| Zorba   | 1998-09-08 |
+| Horatio | 1998-09-08 |
+| Rusty   | 1998-09-08 |
+| Andy    | 1998-09-08 |
+| Lubber  | 1998-09-08 |
+| Brutus  | 1998-09-08 |
+| Dustin  | 1998-09-08 |
+| Bolo    | 1998-09-08 |
+| Art     | 1998-09-08 |
+| Horatio | 1998-09-08 |
+| Zorba   | 1998-09-08 |
+| Horatio | 1998-09-08 |
+| Rusty   | 1998-09-08 |
+| Andy    | 1998-09-08 |
+| Lubber  | 1998-09-08 |
+| Brutus  | 1998-09-08 |
+| Dustin  | 1998-09-08 |
++---------+------------+
+100 rows in set (0.00 sec)
+
+mysql> select sname,day from sailors,reserves where sailors.sid=reserves.sid;
++---------+------------+
+| sname   | day        |
++---------+------------+
+| Dustin  | 1998-10-10 |
+| Dustin  | 1998-10-10 |
+| Dustin  | 1998-10-08 |
+| Dustin  | 1998-10-07 |
+| Lubber  | 1998-11-10 |
+| Lubber  | 1998-11-06 |
+| Lubber  | 1998-11-12 |
+| Horatio | 1998-09-05 |
+| Horatio | 1998-09-08 |
+| Horatio | 1998-09-08 |
++---------+------------+
+10 rows in set (0.00 sec)
+
+mysql> select sname,day from sailors,reserves where sailors.sid=reserves.sid and bid=103;
++---------+------------+
+| sname   | day        |
++---------+------------+
+| Dustin  | 1998-10-08 |
+| Lubber  | 1998-11-06 |
+| Horatio | 1998-09-08 |
++---------+------------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors s,reserves r where s.sid=r.sid;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Horatio |
+| Dustin  |
+| Lubber  |
+| Horatio |
+| Dustin  |
+| Lubber  |
+| Horatio |
+| Dustin  |
+| Lubber  |
++---------+
+10 rows in set (0.01 sec)
+
+mysql> select sname from sailors where sid=(select sid from reserves where count(bid)>=2);
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select sname from sailors where sid=(select sid from reserves where bid group by bid>=2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> select sname from sailors where sid=(select sid from reserves where bid group by bid>=2);
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'lab2.reserves.sid' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select sname from sailors s,reserves r1,reserves r2 where s.sid=r1.sid and r1.sid=r2.sid and r1.bid<>r2.bid;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Horatio |
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Lubber  |
+| Lubber  |
+| Horatio |
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Lubber  |
+| Lubber  |
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Lubber  |
+| Lubber  |
++---------+
+20 rows in set (0.00 sec)
+
+mysql> select sname,r1.bid,r2.bid from sailors s,reserves r1,reserves r2 where s.sid=r1.sid and r1.sid=r2.sid and r1.bid<>r2.bid;
++---------+-----+-----+
+| sname   | bid | bid |
++---------+-----+-----+
+| Dustin  | 101 | 102 |
+| Dustin  | 101 | 103 |
+| Dustin  | 101 | 104 |
+| Horatio | 101 | 102 |
+| Dustin  | 102 | 101 |
+| Dustin  | 102 | 103 |
+| Dustin  | 102 | 104 |
+| Lubber  | 102 | 103 |
+| Lubber  | 102 | 104 |
+| Horatio | 102 | 101 |
+| Dustin  | 103 | 101 |
+| Dustin  | 103 | 102 |
+| Dustin  | 103 | 104 |
+| Lubber  | 103 | 102 |
+| Lubber  | 103 | 104 |
+| Dustin  | 104 | 101 |
+| Dustin  | 104 | 102 |
+| Dustin  | 104 | 103 |
+| Lubber  | 104 | 102 |
+| Lubber  | 104 | 103 |
++---------+-----+-----+
+20 rows in set (0.00 sec)
+
+mysql> select distinct( sname) from sailors s,reserves r1,reserves r2 where s.sid=r1.sid and r1.sid=r2.sid and r1.bid<>r2.
+bid;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Horatio |
+| Lubber  |
++---------+
+3 rows in set (0.01 sec)
+
+mysql> select distinct( sname),r1.bid,r2.bid from sailors s,reserves r1,reserves r2 where s.sid=r1.sid and r1.sid=r2.sid a
+nd r1.bid<>r2.bid;
++---------+-----+-----+
+| sname   | bid | bid |
++---------+-----+-----+
+| Dustin  | 101 | 102 |
+| Dustin  | 101 | 103 |
+| Dustin  | 101 | 104 |
+| Horatio | 101 | 102 |
+| Dustin  | 102 | 101 |
+| Dustin  | 102 | 103 |
+| Dustin  | 102 | 104 |
+| Lubber  | 102 | 103 |
+| Lubber  | 102 | 104 |
+| Horatio | 102 | 101 |
+| Dustin  | 103 | 101 |
+| Dustin  | 103 | 102 |
+| Dustin  | 103 | 104 |
+| Lubber  | 103 | 102 |
+| Lubber  | 103 | 104 |
+| Dustin  | 104 | 101 |
+| Dustin  | 104 | 102 |
+| Dustin  | 104 | 103 |
+| Lubber  | 104 | 102 |
+| Lubber  | 104 | 103 |
++---------+-----+-----+
+20 rows in set (0.00 sec)
+
+mysql> select sname,count(*) from reserves group by sid;
+ERROR 1054 (42S22): Unknown column 'sname' in 'field list'
+mysql> select sname,count(*) from sailors  group by sid;
++---------+----------+
+| sname   | count(*) |
++---------+----------+
+| Dustin  |        1 |
+| Brutus  |        1 |
+| Lubber  |        1 |
+| Andy    |        1 |
+| Rusty   |        1 |
+| Horatio |        1 |
+| Zorba   |        1 |
+| Horatio |        1 |
+| Art     |        1 |
+| Bolo    |        1 |
++---------+----------+
+10 rows in set (0.00 sec)
+
+mysql> select sid,count(*) from sailors  group by sid;
++-----+----------+
+| sid | count(*) |
++-----+----------+
+|  22 |        1 |
+|  29 |        1 |
+|  31 |        1 |
+|  32 |        1 |
+|  58 |        1 |
+|  64 |        1 |
+|  71 |        1 |
+|  74 |        1 |
+|  85 |        1 |
+|  95 |        1 |
++-----+----------+
+10 rows in set (0.00 sec)
+
+mysql> select sid,count(*) from reserves group by sid;
++-----+----------+
+| sid | count(*) |
++-----+----------+
+|  22 |        4 |
+|  31 |        3 |
+|  64 |        2 |
+|  74 |        1 |
++-----+----------+
+4 rows in set (0.00 sec)
+
+mysql> select sid,count(*) from reserves group by having count(*)=4;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'having count(*)=4' at line 1
+mysql> 
+mysql> select sid,count(*) from reserves group bysid  having count(*)=4;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'bysid  having count(*)=4' at line 1
+mysql> select sid,count(*) from reserves group by sid  having count(*)=4;
++-----+----------+
+| sid | count(*) |
++-----+----------+
+|  22 |        4 |
++-----+----------+
+1 row in set (0.00 sec)
+
+mysql> select sid,count(*) from reserves group by sid  having count(*)>=2;
++-----+----------+
+| sid | count(*) |
++-----+----------+
+|  22 |        4 |
+|  31 |        3 |
+|  64 |        2 |
++-----+----------+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in(select sid,count(*) from reserves group by sid  having count(*)>=2);
+ERROR 1241 (21000): Operand should contain 1 column(s)
+mysql> select sname from sailors where sid in(select sid from reserves group by sid  having count(*)>=2);
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select sname,sid from sailors where sid in(select sid from reserves group by sid  having count(*)>=2);
++---------+-----+
+| sname   | sid |
++---------+-----+
+| Dustin  |  22 |
+| Lubber  |  31 |
+| Horatio |  64 |
++---------+-----+
+3 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in(select sid from reserves group by sid  having count(*)=2);
++---------+
+| sname   |
++---------+
+| Horatio |
++---------+
+1 row in set (0.00 sec)
+
+mysql> select sid, sname from sailors where sid in(select sid from reserves group by sid  having count(*)=2);
++-----+---------+
+| sid | sname   |
++-----+---------+
+|  64 | Horatio |
++-----+---------+
+1 row in set (0.00 sec)
+
+mysql> select sname from sailors where sid in(select sid from reserves where bid in(select bid from boats where color="red" and color<>"green"));
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
++---------+
+3 rows in set (0.01 sec)
+
+mysql> select bid from boats where color="red" and color="green";
+Empty set (0.00 sec)
+
+mysql> select bid from boats where color="red" or  color="green";
++-----+
+| bid |
++-----+
+| 102 |
+| 103 |
+| 104 |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> select sid from reserves where bid in(select bid from boats where color="red)and bid in(select bid from boats wherecolor="green);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'green)' at line 1
+mysql> select sid from reserves where bid in(select bid from boats where color="red)and bid in(select bid from boats wherecolor="green");
+    "> ;
+    "> select sid from reserves where bid in(select bid from boats where color="red")and bid in(select bid from boats wherecolor="green);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'green");
+;
+select sid from reserves where bid in(select bid from boats where col' at line 1
+mysql> select sid from reserves where bid in(select bid from boats where color="red)and bid in(select bid from boats wherecolor="green");
+;
+select sid from reserves where bid in(select bid from boats where color="red")and bid in(select bid from boats where color="green");
+    "> ;
+    "> select sid from reserves where bid in(select bid from boats where color="red)and bid in(select bid from boats wherecolor="green");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'green");
+;
+select sid from reserves where bid in(select bid from boats where col' at line 1
+mysql> select sid from reserves where bid in(select bid from boats where color='green');
++-----+
+| sid |
++-----+
+|  22 |
+|  31 |
+|  74 |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> select sid from reserves where bid in(select bid from boats where color='red');
++-----+
+| sid |
++-----+
+|  22 |
+|  31 |
+|  64 |
+|  22 |
+|  31 |
++-----+
+5 rows in set (0.00 sec)
+
+mysql> select sid from reserves where bid in(select bid from boats where color='red') and select sid from reserves where bid in(select bid from boats where color='green');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select sid from reserves where bid in(select bid from boats where color='green')' at line 1
+mysql> select sid from reserves where bid in(select bid from boats where color='red') intersect select sid from reserves w
+here bid in(select bid from boats where color='green');
++-----+
+| sid |
++-----+
+|  22 |
+|  31 |
++-----+
+2 rows in set (0.00 sec)
+
+mysql> select sid from reserves where bid in(select bid from boats where color='red')union select sid from reserves where
+bid in(select bid from boats where color='green');
++-----+
+| sid |
++-----+
+|  22 |
+|  31 |
+|  64 |
+|  74 |
++-----+
+4 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in select sid from reserves where bid in(select bid from boats where color='red') intersect select sid from reserves where bid in(select bid from boats where color='green');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select sid from reserves where bid in(select bid from boats where color='red') i' at line 1
+mysql> select sname from sailors where sid in ( select sid from reserves where bid in(select bid from boats where color='red') intersect select sid from reserves where bid in(select bid from boats where color='green'));
++--------+
+| sname  |
++--------+
+| Dustin |
+| Lubber |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select sname from sailors where sid in ( select sid from reserves where bid in(select bid from boats where color='red') except select sid from reserves where bid in(select bid from boats where color='green'));
++---------+
+| sname   |
++---------+
+| Horatio |
++---------+
+1 row in set (0.00 sec)
+
+mysql> select sname from sailors where sid in ( select sid from reserves where bid in(select bid from boats where color='red') minus select sid from reserves where bid in(select bid from boats where color='green'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'minus select sid from reserves where bid in(select bid from boats where color='g' at line 1
+mysql> select sid,sname from sailors where sid in ( select sid from reserves where bid in(select bid from boats where color='red') except select sid from reserves where bid in(select bid from boats where color='green'));
++-----+---------+
+| sid | sname   |
++-----+---------+
+|  64 | Horatio |
++-----+---------+
+1 row in set (0.00 sec)
+
+mysql> select sname from sailors where sid in select sid from reserves where bid in(select bid from boats where color='red
+') union all  select sid from reserves where bid in(select bid from boats where color='green');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select sid from reserves where bid in(select bid from boats where color='red') u' at line 1
+mysql> select sname from sailors where sid in ( select sid from reserves where bid in(select bid from boats where color='red') union all  select sid from reserves where bid in(select bid from boats where color='green'));
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Lubber  |
+| Horatio |
+| Horatio |
++---------+
+4 rows in set (0.00 sec)
+
+mysql> select sid,sname from sailors where sid in(select sid from reserves where bid in(select bid from boats where max(count(bid))));
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select sid,sname from sailors where sid in(select sid from reserves where bid in(select bid from boats group by bidhaving count(*)=max)));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(*)=max)))' at line 1
+mysql> select sid,sname from sailors where sid in(select sid from reserves where bid in(select bid from boats group by bidhaving count(*)=(select count(*) from boats));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(*)=(select count(*) from boats))' at line 1
+mysql> select sid,sname from sailors where sid in(select sid from reserves where bid in(select bid from boats group by bidhaving count(*)=(select count(*) from boats)));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(*)=(select count(*) frmysql> select sid,sname from sailors where sid in(select sid from reserves where bid in(select bid from boats group by bid having count(*)=(select count(*) from boats)));
+Empty set (0.00 sec)ame from sailors where sid in(select sid from reserves where bid in(select bid from boats group by bidhaving count(*)=(select count(*) from boats)));
+
+mysql> select sid,sname from sailors where sid in(select sid from reserves group by sid having count(*)=(select count(*) from boats));
++-----+--------+
+| sid | sname  |
++-----+--------+
+|  22 | Dustin |
++-----+--------+
+1 row in set (0.00 sec)
+
+mysql> 
+
+

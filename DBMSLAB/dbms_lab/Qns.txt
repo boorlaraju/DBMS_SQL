@@ -1,0 +1,18 @@
+1>>Display the names of the employee who are working for both product-x and product-y projess
+
+2>.Dis total no of hours worked by each employee on the projects.
+
+3>.dis dept_no ,drpt_nsme,mngr_name,mngr_aadres for each dept.
+
+4>>for the projects located at houston ,dis the controling dept_nmae and no.of employees in that dept.(atleast deptt no).
+
+
+5>>dis the following details 
+
+  boatid,no.of sailors who have reserved that for each boat.
+
+6>>dis name & color of the boats reservesd by sailors with rating 10.
+
+7> dis thr rating of sailors who have reservsed all the boats.
+
+8>.add an attribute to sailors tabule address string, and update the value of adrs houston for the sailors who's name starts with D.

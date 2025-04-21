@@ -1,0 +1,153 @@
+1)display names of the all the sailors;
+mysql> select sname from sailors;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Brutus  |
+| Lubber  |
+| Andy    |
+| Rusty   |
+| Horatio |
+| Zorba   |
+| Horatio |
+| Art     |
+| Bolo    |
++---------+
+
+2)count the number of sailors;
+mysql> select count(sid) from sailors;
++------------+
+| count(sid) |
++------------+
+|         10 |
++------------
+display colors of the boats;
+mysql> select color from boats;
++-------+
+| color |
++-------+
+| Blue  |
+| Red   |
+| Green |
+| Red   |
++-------+
+
+4)display color of the boat named interlake;
+mysql> select color from boats where bname='interlake';
++-------+
+| color |
++-------+
+| Blue  |
+| Red   |
++-------+
+5)display ratings of the sailors whose age is above 40;
+mysql> select rating from sailors where age>=40;
++--------+
+| rating |
++--------+
+|      7 |
+|      8 |
+|      9 |
+|      3 |
++--------+
+
+6)display ids and names of the whose rating is 8;
+mysql> select sid,sname from sailors  where rating=8;
++------+--------+
+| sid  | sname  |
++------+--------+
+|   31 | Lubber |
+|   32 | Andy   |
++------+--------
+7)display details of the sailors rating wise(high-low);
+mysql> select*from sailors order by rating desc;
++------+---------+--------+------+
+| sid  | sname   | rating | age  |
++------+---------+--------+------+
+|   58 | Rusty   |     10 |   35 |
+|   71 | Zorba   |     10 |   16 |
+|   74 | Horatio |      9 |   40 |
+|   31 | Lubber  |      8 | 55.5 |
+|   32 | Andy    |      8 | 25.5 |
+|   22 | Dustin  |      7 |   45 |
+|   64 | Horatio |      7 |   35 |
+|   85 | Art     |      3 | 25.5 |
+|   95 | Bolo    |      3 | 63.5 |
+|   29 | Brutus  |      1 |   33 |
++------+---------+--------+------+
+10 rows in set (0.00 sec)
+
+mysql> select*from sailors order by rating asc;
++------+---------+--------+------+
+| sid  | sname   | rating | age  |
++------+---------+--------+------+
+|   29 | Brutus  |      1 |   33 |
+|   85 | Art     |      3 | 25.5 |
+|   95 | Bolo    |      3 | 63.5 |
+|   22 | Dustin  |      7 |   45 |
+|   64 | Horatio |      7 |   35 |
+|   31 | Lubber  |      8 | 55.5 |
+|   32 | Andy    |      8 | 25.5 |
+|   74 | Horatio |      9 |   40 |
+|   58 | Rusty   |     10 |   35 |
+|   71 | Zorba   |     10 |   16 |
++------+---------+--------+------+
+
+8)display name of the sailor who has highest rating;
+mysql> select sname from sailors where rating=(select max(rating) from sailors);
++-------+
+| sname |
++-------+
+| Rusty |
+| Zorba |
++-------+
+
+9)display boat ids reserves by Sailor with sid 22;
+mysql> select bid from reserves where sid=22;
++------+
+| bid  |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
++------+
+
+10)display name of the oldest sailor;
+mysql> select sname from sailors where age=(select max(age) from sailors);
++-------+
+| sname |
++-------+
+| Bolo  |
++-------+
+
+11)display boat ids reserved by dustin;
+mysql> select bid from reserves where sid=(select sid from sailors where sname='Dustin');
++------+
+| bid  |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
++------+
+
+12)display number of boats reserved by 22;
+mysql> select count(bid) from reserves where sid=22;
++------------+
+| count(bid) |
++------------+
+|          4 |
++------------+
+
+13)display color of the boat by 104;
+mysql> select color from boats where bid=104;
++-------+
+| color |
++-------+
+| Red   |
++-------+
+
+14)display color of the boats reserved by 31?
+
